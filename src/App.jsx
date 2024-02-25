@@ -6,6 +6,7 @@ import CandidatePage from "./pages/admin/CandidatePage"
 import LoginPage from "./pages/user/LoginPage"
 import PrivateRoute from "./components/Fragments/PrivateRoute"
 import LogoutPage from "./pages/user/LogoutPage"
+import CreateCandidatePage from "./pages/admin/CreateCandidatePage"
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/pemilihan" element={<PrivateRoute><VotePage /></PrivateRoute>} />
         {/* Route admin */}
         <Route exact path="/kandidat" element={<PrivateRoute><CandidatePage /></PrivateRoute>} />
+        <Route exact path="/input-kandidat" element={<PrivateRoute><CreateCandidatePage /></PrivateRoute>} />
         {/* Route not found */}
         <Route exact path="/*" element={'not found'} />
       </Routes>
