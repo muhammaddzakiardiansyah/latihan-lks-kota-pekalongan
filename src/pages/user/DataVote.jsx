@@ -1,20 +1,45 @@
 import { Chart } from "chart.js/auto";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Fragments/Navbar";
+import axios from "axios";
 
 const DataVote = () => {
+  const [data, setData] = useState({
+    data_01: "",
+    data_02: "",
+  });
+ 
   useEffect(() => {
-    const ctx = document.getElementById("chart1");
+    Promise.all([
+      axios.get(
+        "http://localhost:3001/api/v1/votes/3e7080f8-d78a-47cc-830b-202a4fff593a"
+      ),
+      axios.get(
+        "http://localhost:3001/api/v1/votes/e1de0647-a5d8-45af-8317-dac5d5448847"
+      ),
+    ]).then((response) => {
+      const [res1, res2] = response;
+      setData((prevState) => ({
+        ...prevState,
+        data_01: res1.data.body.data,
+        data_02: res2.data.body.data,
+      }));
+    });
+  }, []);
 
-    let chart1 = new Chart(ctx, {
+  useEffect(() => {
+    const ctx1 = document.getElementById("chart1");
+    const ctx2 = document.getElementById("chart2");
+
+    let chart1 = new Chart(ctx1, {
       type: "bar",
       data: {
-        labels: ["Budianto", "Lionel messi", "Ronaldo"],
+        labels: ["Firman Tidore", "Daka Andrian Maulana"],
         datasets: [
           {
-            label: "# of Votes",
-            data: [12, 29, 3],
-            borderWidth: 1,
+            label: "Perolehan suara",
+            data: [data.data_01.total_vote, data.data_02.total_vote],
+            borderWidth: 2,
           },
         ],
       },
@@ -27,22 +52,14 @@ const DataVote = () => {
       },
     });
 
-    return () => {
-      chart1.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ctx = document.getElementById("chart2");
-
-    let chart2 = new Chart(ctx, {
+    let chart2 = new Chart(ctx2, {
       type: "doughnut",
       data: {
-        labels: ["Budianto", "Lionel messi", "Ronaldo"],
+        labels: ["Firman Tidore", "Daka Andrian Maulana"],
         datasets: [
           {
             label: "Perolehan suara",
-            data: [12, 29, 3],
+            data: [data.data_01.total_vote, data.data_02.total_vote],
             backgroundColor: [
               "rgb(255, 99, 132)",
               "rgb(54, 162, 235)",
@@ -55,9 +72,10 @@ const DataVote = () => {
     });
 
     return () => {
+      chart1.destroy();
       chart2.destroy();
     };
-  }, []);
+  }, [data]);
 
   return (
     <>
